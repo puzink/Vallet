@@ -25,7 +25,6 @@ paths:
       summary: Perform wallet action.
       description: Withdraw or deposit.
       requestBody:
-        description: Update an existent pet in the store
         content:
           application/json:
             schema:
