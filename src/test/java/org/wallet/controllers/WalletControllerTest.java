@@ -1,9 +1,8 @@
 package org.wallet.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -13,9 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
+import org.wallet.entities.Wallet;
 import org.wallet.model.Action;
 import org.wallet.model.ErrorType;
 import org.wallet.model.PerformActionRequest;
+import org.wallet.model.PerformActionResponse;
 
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class WalletControllerTest {
 
     static final String URL = "/action";
@@ -35,6 +38,16 @@ public class WalletControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    static Wallet existingWallet;
+
+    @BeforeAll
+    public static void setup(){
+        existingWallet = new Wallet(
+                UUID.fromString("4906eed1-3ee9-47bb-b10f-596e2d071ea7"),
+                1000L
+        );
+    }
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideNoArgsRequests")
@@ -64,6 +77,24 @@ public class WalletControllerTest {
             performActionAndExpectError(request, ErrorType.WALLET_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
+        @Test
+        @DisplayName("no money - 400 error")
+        public void notEnoughMoney() throws Exception {
+            long amount = existingWallet.getAmount();
+            PerformActionRequest request = new PerformActionRequest(
+                    existingWallet.getUuid(), Action.WITHDRAW, amount + 100);
+
+            performActionAndExpectError(request, ErrorType.NOT_ENOUGH_FUNDS, HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        public void completeWithdraw() throws Exception {
+            PerformActionRequest request = new PerformActionRequest(
+                    existingWallet.getUuid(), Action.WITHDRAW, existingWallet.getAmount());
+
+            performActionAndExpectOk(request, new PerformActionResponse(existingWallet.getUuid(), 0L));
+        }
+
     }
 
     @Nested
@@ -76,14 +107,30 @@ public class WalletControllerTest {
             long amount = 100L;
             PerformActionRequest request = new PerformActionRequest(userId, Action.DEPOSIT, amount);
 
-            String contentJson = objectMapper.writeValueAsString(request);
-            mockMvc.perform(post(URL)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .content(contentJson))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.uuid").value(userId.toString()))
-                    .andExpect(jsonPath("$.amount").value(amount));
+            performActionAndExpectOk(request, new PerformActionResponse(userId, 100L));
         }
+
+        @Test
+        public void depositToExistingWallet() throws Exception {
+            long amount = 100L;
+            PerformActionRequest request =
+                    new PerformActionRequest(existingWallet.getUuid(), Action.DEPOSIT, amount);
+
+            performActionAndExpectOk(request,
+                    new PerformActionResponse(existingWallet.getUuid(),
+                            existingWallet.getAmount() + 100L)
+            );
+        }
+    }
+
+    private void performActionAndExpectOk(PerformActionRequest request, PerformActionResponse expected) throws Exception {
+        String contentJson = objectMapper.writeValueAsString(request);
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(contentJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uuid").value(expected.getUuid().toString()))
+                .andExpect(jsonPath("$.amount").value(expected.getAmount()));
     }
 
     private void performActionAndExpectError(PerformActionRequest request, ErrorType errorType, HttpStatus httpStatus) throws Exception {

@@ -34,7 +34,8 @@ public class WalletService {
 
     public long deposit(UUID uuid, long amount) {
         Wallet wallet = walletRepository.findById(uuid)
-                .orElse(new Wallet(uuid, amount));
+                .orElse(new Wallet(uuid, 0L));
+        wallet.setAmount(wallet.getAmount() + amount);
         walletRepository.save(wallet);
         return wallet.getAmount();
     }
