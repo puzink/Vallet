@@ -1,8 +1,10 @@
 package org.wallet.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -42,7 +44,7 @@ public class WalletControllerTest {
     static Wallet existingWallet;
 
     @BeforeAll
-    public static void setup(){
+    public static void setup() {
         existingWallet = new Wallet(
                 UUID.fromString("4906eed1-3ee9-47bb-b10f-596e2d071ea7"),
                 1000L
@@ -62,6 +64,34 @@ public class WalletControllerTest {
         return Stream.of(
                 Arguments.of("no uuid", null, Action.DEPOSIT, 10L),
                 Arguments.of("no action", UUID.randomUUID(), null, 10L)
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("provideWrongRequests")
+    @DisplayName("wrong args - 400 error")
+    public void wrongArgs(String name, String uuid, String action, long amount) throws Exception {
+        String json =
+                """
+                            {
+                               "uuid": "%s",
+                               "action": "%s",
+                               "amount": %d
+                            }
+                        """.formatted(uuid, action, amount);
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    private static Stream<Arguments> provideWrongRequests() {
+        return Stream.of(
+                Arguments.of("bad uuid", "fdasfsa", Action.DEPOSIT.name(), 10L),
+                Arguments.of("bad action", UUID.randomUUID().toString(), "FDSSA", 10L),
+                Arguments.of("negative amount", UUID.randomUUID().toString(), Action.WITHDRAW.name(), -10L)
+
         );
     }
 
