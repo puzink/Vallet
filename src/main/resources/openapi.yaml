@@ -38,7 +38,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PerformActionResponse'          
         '400':
-          description: Invalid args
+          description: Invalid args or not enough money to withdraw
           content:
             application/json:
               schema:
