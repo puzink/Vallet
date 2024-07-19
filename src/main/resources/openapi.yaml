@@ -1,0 +1,95 @@
+openapi: 3.0.3
+info:
+  title: Swagger Bank - OpenAPI 3.0
+  description: |-
+    Сервис для пополнения и снятия денег со счёта в банке.
+  version: 1.0.11
+# tags:
+#   - name: pet
+#     description: Everything about your Pets
+#     externalDocs:
+#       description: Find out more
+#       url: http://swagger.io
+#   - name: store
+#     description: Access to Petstore orders
+#     externalDocs:
+#       description: Find out more about our store
+#       url: http://swagger.io
+#   - name: user
+#     description: Operations about user
+paths:
+  /action:
+    post:
+      tags:
+        - wallet
+      summary: Perform wallet action.
+      description: Withdraw or deposit.
+      requestBody:
+        description: Update an existent pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PerformActionRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerformActionResponse'          
+        '400':
+          description: Invalid args
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'    
+        '404':
+          description: Withdraw from not existed wallet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          
+  
+components:
+  schemas:
+    PerformActionRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        amount:
+          type: integer
+          format: int64
+          example: 100
+        action:
+          type: string
+          description: Action type.
+          example: DEPOSIT
+          enum:
+            - WITHDRAW
+            - DEPOSIT
+            
+    PerformActionResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        amount:
+          type: integer
+          format: int64
+          
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: error type
+          enum:
+            - Error
+          example: Error
+        message:
+          type: string
