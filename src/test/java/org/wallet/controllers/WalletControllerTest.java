@@ -53,7 +53,7 @@ public class WalletControllerTest {
     }
 
     @Nested
-    public class WithdrawTest{
+    public class WithdrawTest {
 
         @Test
         @DisplayName("no wallet is found - 404 error")
@@ -67,7 +67,7 @@ public class WalletControllerTest {
     }
 
     @Nested
-    public class DepositTest{
+    public class DepositTest {
 
         @Test
         @DisplayName("no wallet is found - new wallet")

@@ -33,7 +33,7 @@ public class ExceptionHandlerController {
     private void sendResponse(HttpServletResponse response, HttpStatus httpStatus, ModelException e) throws IOException {
         response.setStatus(httpStatus.value());
         ObjectMapper mapper = new ObjectMapper();
-        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream()))){
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream()))) {
             writer.write(mapper.writeValueAsString(new ErrorResponse(e.getMessage(), e.getErrorType())));
         }
 

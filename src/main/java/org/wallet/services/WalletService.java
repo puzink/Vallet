@@ -8,7 +8,6 @@ import org.wallet.model.NotEnoughFundsException;
 import org.wallet.model.WalletNotFoundException;
 import org.wallet.repositories.WalletRepository;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,7 +24,7 @@ public class WalletService {
     public long withdraw(UUID uuid, long amount) {
         Wallet wallet = walletRepository.findById(uuid)
                 .orElseThrow(() -> new WalletNotFoundException("Wallet not found: " + uuid));
-        if(wallet.getAmount() < amount) {
+        if (wallet.getAmount() < amount) {
             throw new NotEnoughFundsException("Not enough funds. Amount to withdraw: " + amount);
         }
         wallet.setAmount(wallet.getAmount() - amount);
