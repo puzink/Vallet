@@ -11,4 +11,10 @@ public class ModelException extends RuntimeException {
         super(message);
         this.errorType = errorType;
     }
+
+    public ModelException(Throwable cause, ErrorType errorType) {
+        super(cause);
+        this.errorType = errorType;
+    }
+
 }
