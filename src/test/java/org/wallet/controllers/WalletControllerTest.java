@@ -2,6 +2,7 @@ package org.wallet.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -51,13 +52,38 @@ public class WalletControllerTest {
         );
     }
 
-    @Test
-    @DisplayName("no wallet is found - 404 error")
-    public void noWalletExists() throws Exception {
-        UUID userId = UUID.randomUUID();
-        PerformActionRequest request = new PerformActionRequest(userId, Action.DEPOSIT, 100L);
+    @Nested
+    public class WithdrawTest{
 
-        performActionAndExpectError(request, ErrorType.WALLET_NOT_FOUND, HttpStatus.NOT_FOUND);
+        @Test
+        @DisplayName("no wallet is found - 404 error")
+        public void noWalletExists() throws Exception {
+            UUID userId = UUID.randomUUID();
+            PerformActionRequest request = new PerformActionRequest(userId, Action.WITHDRAW, 100L);
+
+            performActionAndExpectError(request, ErrorType.WALLET_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @Nested
+    public class DepositTest{
+
+        @Test
+        @DisplayName("no wallet is found - new wallet")
+        public void noWalletExists() throws Exception {
+            UUID userId = UUID.randomUUID();
+            long amount = 100L;
+            PerformActionRequest request = new PerformActionRequest(userId, Action.DEPOSIT, amount);
+
+            String contentJson = objectMapper.writeValueAsString(request);
+            mockMvc.perform(post(URL)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .content(contentJson))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.uuid").value(userId.toString()))
+                    .andExpect(jsonPath("$.amount").value(amount));
+        }
     }
 
     private void performActionAndExpectError(PerformActionRequest request, ErrorType errorType, HttpStatus httpStatus) throws Exception {
@@ -67,7 +93,7 @@ public class WalletControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(contentJson))
                 .andExpect(status().is(httpStatus.value()))
-                .andExpect(jsonPath("$.type").value(errorType))
+                .andExpect(jsonPath("$.type").value(errorType.name()))
                 .andExpect(jsonPath("$.message").isString());
     }
 
