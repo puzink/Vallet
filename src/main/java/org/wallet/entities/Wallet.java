@@ -1,11 +1,15 @@
 package org.wallet.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Check;
+import org.wallet.repositories.uuid.annotations.WalletUuidGenerator;
 
 import java.util.UUID;
 
@@ -18,7 +22,7 @@ import java.util.UUID;
 public class Wallet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @WalletUuidGenerator
     private UUID uuid;
 
     @Column(nullable = false)
