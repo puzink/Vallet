@@ -49,6 +49,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '409':
+          description: Concurrency update exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           
   
 components:
