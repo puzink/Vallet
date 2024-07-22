@@ -1,0 +1,7 @@
+[Connection: close]
+[Content-type: application/json]
+[User-Agent: Tank]
+78 /action
+{"uuid":"4036bc8d-ccf5-4a43-ba30-b76891aafaa8","action":"DEPOSIT","amount":10}
+79 /action
+{"uuid":"4036bc8d-ccf5-4a43-ba30-b76891aafaa8","action":"WITHDRAW","amount":10}

@@ -1,0 +1,16 @@
+phantom:
+  address: 192.168.56.1:8080 # [Target's address]:[target's port]
+  load_profile:
+    load_type: rps # schedule load by defining requests per second
+    schedule: line(1, 500, 20s) # starting from 1rps growing linearly to 10rps during 10 minutes
+  uris:
+    - "/ping"
+  # load_profile:
+  #   load_type: rps # schedule load by defining requests per second
+  #   schedule: line(1, 100, 50s) # starting from 1rps growing linearly to 10rps during 10 minutes
+  # ammo_type: uripost
+        
+console:
+  enabled: true # enable console output
+telegraf:
+  enabled: false # let's disable telegraf monitoring for the first time
