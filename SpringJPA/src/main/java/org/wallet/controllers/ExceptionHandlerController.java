@@ -37,6 +37,7 @@ public class ExceptionHandlerController {
             sendResponse(response,
                     HttpStatus.CONFLICT,
                     new ModelException(e.getMessage(), ErrorType.TRANSACTION_CONCURRENCY_CONFLICT));
+            return;
         }
         throw new RuntimeException(e);
     }
