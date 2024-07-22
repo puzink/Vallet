@@ -2,6 +2,7 @@ package org.wallet.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,6 +29,16 @@ public class ExceptionHandlerController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     void badArgs(HttpServletResponse response, MethodArgumentNotValidException e) throws IOException {
         sendResponse(response, HttpStatus.BAD_REQUEST, new ModelException(e.getMessage(), ErrorType.BAD_INPUT));
+    }
+
+    @ExceptionHandler(PSQLException.class)
+    void psqlException(HttpServletResponse response, PSQLException e) throws IOException {
+        if(e.getSQLState().equals("40001")) {
+            sendResponse(response,
+                    HttpStatus.CONFLICT,
+                    new ModelException(e.getMessage(), ErrorType.TRANSACTION_CONCURRENCY_CONFLICT));
+        }
+        throw new RuntimeException(e);
     }
 
     private void sendResponse(HttpServletResponse response, HttpStatus httpStatus, ModelException e) throws IOException {
