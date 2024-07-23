@@ -5,6 +5,8 @@ import org.postgresql.util.PSQLException;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.wallet.dao.WalletDao;
 import org.wallet.dao.domain.tables.records.WalletRecord;
 import org.wallet.model.NotEnoughFundsException;
@@ -16,6 +18,7 @@ import java.util.UUID;
 @Service
 @Profile("jdbc")
 @RequiredArgsConstructor
+@Transactional(propagation = Propagation.SUPPORTS)
 public class JdbcWalletService implements WalletService{
 
     private final WalletDao walletDao;
