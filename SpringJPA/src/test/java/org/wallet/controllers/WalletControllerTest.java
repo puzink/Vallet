@@ -138,7 +138,6 @@ public class WalletControllerTest {
             PerformActionRequest request = new PerformActionRequest(userId, Action.DEPOSIT, amount);
 
             performActionAndExpectOk(request, new PerformActionResponse(userId, 100L));
-            System.out.println();
         }
 
         @Test

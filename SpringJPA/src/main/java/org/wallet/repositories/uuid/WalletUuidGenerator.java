@@ -11,7 +11,8 @@ import java.lang.reflect.Member;
 
 
 /**
- * Если сущности нет в БД, но у неё задан uuid, тогда используем его, вместо генерации нового.
+ * Если сущности нет в БД, но у неё задан uuid, тогда используем его, вместо генерации нового,
+ * как делает {@link UuidGenerator}.
  */
 public class WalletUuidGenerator extends UuidGenerator {
     public WalletUuidGenerator(org.wallet.repositories.uuid.annotations.WalletUuidGenerator config,

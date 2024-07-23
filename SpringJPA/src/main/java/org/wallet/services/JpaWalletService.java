@@ -1,6 +1,7 @@
 package org.wallet.services;
 
 import org.postgresql.util.PSQLException;
+import org.springframework.context.annotation.Profile;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -13,8 +14,8 @@ import org.wallet.repositories.WalletRepository;
 import java.util.UUID;
 
 @Service
-@Transactional(isolation = Isolation.REPEATABLE_READ)
 @Retryable(retryFor = PSQLException.class)
+@Profile("jpa")
 public class JpaWalletService implements WalletService {
 
     private final WalletRepository walletRepository;
