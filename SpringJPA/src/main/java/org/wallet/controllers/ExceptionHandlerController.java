@@ -2,6 +2,7 @@ package org.wallet.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,15 +15,18 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 @ControllerAdvice
+@Slf4j
 public class ExceptionHandlerController {
 
     @ExceptionHandler(WalletNotFoundException.class)
     void walletNotFound(HttpServletResponse response, WalletNotFoundException e) throws IOException {
+        log.warn("Wallet not found.");
         sendResponse(response, HttpStatus.NOT_FOUND, e);
     }
 
     @ExceptionHandler(NotEnoughFundsException.class)
     void notEnoughMoney(HttpServletResponse response, NotEnoughFundsException e) throws IOException {
+        log.warn("Cannot withdraw: not enough funds.");
         sendResponse(response, HttpStatus.BAD_REQUEST, e);
     }
 
@@ -33,7 +37,8 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(PSQLException.class)
     void psqlException(HttpServletResponse response, PSQLException e) throws IOException {
-        if(e.getSQLState().equals("40001")) {
+        if (e.getSQLState().equals("40001")) {
+            log.error("Transaction concurrency conflict.");
             sendResponse(response,
                     HttpStatus.CONFLICT,
                     new ModelException(e.getMessage(), ErrorType.TRANSACTION_CONCURRENCY_CONFLICT));
