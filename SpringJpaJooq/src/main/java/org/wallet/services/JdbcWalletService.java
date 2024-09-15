@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service
 @Profile("jdbc")
 @RequiredArgsConstructor
-@Transactional(propagation = Propagation.SUPPORTS)
+@Transactional
 @Slf4j
 public class JdbcWalletService implements WalletService {
 
