@@ -85,7 +85,7 @@
                             <!-- структура пакетов относительно основной директории -->
                             <packageName>org.wallet.dao.domain</packageName>
                             <!-- основная директория. Лучше хранить в target. -->
-                            <directory>target/generated-sources/jooq</directory>
+                            <directory>src/main/java</directory>
                         </target>
                     </generator>
                 </configuration>
