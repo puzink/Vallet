@@ -5,10 +5,12 @@ import org.jooq.codegen.GenerationTool;
 import org.jooq.meta.jaxb.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("jooq-gen")
 public class JooqCodeGenerator implements ApplicationListener<ContextRefreshedEvent> {
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
