@@ -7,15 +7,20 @@ import org.jooq.Field;
 import org.jooq.Table;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.testcontainers.context.ImportTestcontainers;
+import org.wallet.mods.ContainerProvider;
+import org.wallet.mods.DisableLiquibaseSpringBootTest;
 
 import java.util.Arrays;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// для использования IoC-контейнера в @BeforeAll/@AfterAll
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UpdateMigrationTest extends DisableLiquibaseSpringBootTest {
+@ImportTestcontainers(ContainerProvider.class)
+public class UpdateMigrationTest implements DisableLiquibaseSpringBootTest {
 
     @Autowired
     private LiquibaseService liquibaseService;

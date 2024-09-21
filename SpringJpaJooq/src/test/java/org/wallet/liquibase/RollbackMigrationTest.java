@@ -2,11 +2,15 @@ package org.wallet.liquibase;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.testcontainers.context.ImportTestcontainers;
+import org.wallet.mods.ContainerProvider;
+import org.wallet.mods.DisableLiquibaseSpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-public class RollbackMigrationTest extends DisableLiquibaseSpringBootTest {
+@ImportTestcontainers(ContainerProvider.class)
+public class RollbackMigrationTest implements DisableLiquibaseSpringBootTest {
 
     @Autowired
     private LiquibaseService liquibaseService;

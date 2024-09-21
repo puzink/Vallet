@@ -1,4 +1,4 @@
-package org.wallet.liquibase;
+package org.wallet.mods;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -6,8 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
         properties = {
                 "spring.liquibase.enabled=false",
                 "spring.jpa.hibernate.ddl-auto=none"
-        },
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+        }
 )
-public abstract class DisableLiquibaseSpringBootTest {
+public interface DisableLiquibaseSpringBootTest {
 }
