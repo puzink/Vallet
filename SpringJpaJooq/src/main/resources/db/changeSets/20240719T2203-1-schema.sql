@@ -2,9 +2,11 @@
 
 --changeset clerk:1
 create table wallet (
-    amount bigint not null check (amount >= 0),
+    amount bigint,
     uuid uuid not null,
     primary key (uuid)
 );
+
+alter table wallet add constraint wallet_amount_check check ( amount >= 0 );
 
 --rollback drop table wallet;

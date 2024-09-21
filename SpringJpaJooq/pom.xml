@@ -63,14 +63,6 @@
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>
                 <version>${jooq.version}</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <jdbc>  <!-- указываем настройки базы -->
                         <driver>${db.driver}</driver>
@@ -93,7 +85,7 @@
                             <!-- структура пакетов относительно основной директории -->
                             <packageName>org.wallet.dao.domain</packageName>
                             <!-- основная директория. Лучше хранить в target. -->
-                            <directory>target/generated-sources/jooq</directory>
+                            <directory>src/main/java</directory>
                         </target>
                     </generator>
                 </configuration>
